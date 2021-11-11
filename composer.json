@@ -1,0 +1,43 @@
+{
+  "name": "noxkiwi/cache",
+  "description": "Caching subsystem.",
+  "version": "1.0.0",
+  "type": "package",
+  "license": "proprietary",
+  "keywords": [
+    "cache",
+    "caching"
+  ],
+  "homepage": "https://nox.kiwi/",
+  "time": "2021-05-28",
+  "authors": [
+    {
+      "name": "Jan Nox",
+      "email": "jan.nox@pm.me",
+      "homepage": "https://nox.kiwi",
+      "role": "Lead Developer"
+    }
+  ],
+  "require": {
+    "php": ">=8.0.5",
+    "noxkiwi/core": "*",
+    "noxkiwi/log": "*",
+    "noxkiwi/hook": "*",
+    "noxkiwi/observing": "*",
+    "noxkiwi/singleton": "*",
+    "noxkiwi/validator": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7"
+  },
+  "suggest": {
+    "ext-apcu": "*",
+    "ext-redis": "*",
+    "ext-memcache": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "noxkiwi\\cache\\": "backend/class/"
+    }
+  }
+}
