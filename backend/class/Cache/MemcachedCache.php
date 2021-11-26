@@ -11,6 +11,7 @@ use noxkiwi\core\Exception\ConfigurationException;
 use noxkiwi\core\Exception\SystemComponentException;
 use function extension_loaded;
 use const E_ERROR;
+use const E_USER_NOTICE;
 
 /**
  * I am the Memcached Cache client.

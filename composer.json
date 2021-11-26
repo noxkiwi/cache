@@ -3,7 +3,7 @@
   "description": "Caching subsystem.",
   "version": "1.0.0",
   "type": "package",
-  "license": "proprietary",
+  "license": "GPL-3.0-or-later",
   "keywords": [
     "cache",
     "caching"
@@ -20,12 +20,12 @@
   ],
   "require": {
     "php": ">=8.0.5",
-    "noxkiwi/core": "*",
-    "noxkiwi/log": "*",
-    "noxkiwi/hook": "*",
-    "noxkiwi/observing": "*",
-    "noxkiwi/singleton": "*",
-    "noxkiwi/validator": "*"
+    "noxkiwi/core": "dev-master",
+    "noxkiwi/log": "dev-master",
+    "noxkiwi/hook": "dev-master",
+    "noxkiwi/observing": "dev-master",
+    "noxkiwi/singleton": "dev-master",
+    "noxkiwi/validator": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^7"

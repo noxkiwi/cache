@@ -9,6 +9,8 @@ use noxkiwi\core\Exception\SystemComponentException;
 use Redis;
 use function extension_loaded;
 use function str_replace;
+use function strtoupper;
+use const E_ERROR;
 
 /**
  * I am the PHP Redis Cache client.
