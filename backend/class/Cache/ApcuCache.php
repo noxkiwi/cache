@@ -4,8 +4,14 @@ namespace noxkiwi\cache\Cache;
 use noxkiwi\cache\Cache;
 use noxkiwi\cache\Observer\CacheObserver;
 use noxkiwi\core\Exception\SystemComponentException;
+use function apcu_delete;
+use function apcu_exists;
+use function apcu_fetch;
+use function apcu_store;
 use function extension_loaded;
 use function str_replace;
+use function strtoupper;
+use const E_ERROR;
 
 /**
  * I am the PHP APCU Cache client.

@@ -10,11 +10,19 @@ use noxkiwi\core\ErrorHandler;
 use noxkiwi\core\Exception\ConfigurationException;
 use noxkiwi\core\Exception\SystemComponentException;
 use noxkiwi\core\Request;
+use function explode;
 use function extension_loaded;
+use function fclose;
+use function feof;
+use function fgets;
+use function fsockopen;
+use function fwrite;
 use function in_array;
 use function preg_match;
 use function preg_match_all;
+use function str_contains;
 use const E_ERROR;
+use const E_USER_NOTICE;
 
 /**
  * I am the Memcached Cache client.
