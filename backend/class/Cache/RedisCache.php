@@ -48,9 +48,9 @@ final class RedisCache extends Cache
         if (! empty ($errors)) {
             throw new ConfigurationException('INVALID_MEMCACHE_SETUP', E_ERROR, $errors);
         }
-        $this->host    = $config['host'];
-        $this->port    = $config['port'];
         $this->timeout = $config['timeout'] ?? self::DEFAULT_TIMEOUT;
+        $this->port    = $config['port'];
+        $this->host    = $config['host'];
         parent::__construct();
     }
 
