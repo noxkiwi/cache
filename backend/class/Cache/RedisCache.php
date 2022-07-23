@@ -70,6 +70,8 @@ final class RedisCache extends Cache
     public function set(string $group, string $key, mixed $value = null, int $timeout = null): void
     {
         if ($value === null) {
+            $this->clearKey($group, $key);
+
             return;
         }
         $this->notify(CacheObserver::NOTIFY_SET);

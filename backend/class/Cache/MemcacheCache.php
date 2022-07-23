@@ -32,8 +32,8 @@ use const E_USER_NOTICE;
  * @package      noxkiwi\cache\Cache
  * @author       Jan Nox <jan.nox@pm.me>
  * @license      https://nox.kiwi/license
- * @copyright    2021 noxkiwi
- * @version      1.0.1
+ * @copyright    2021 - 2022 noxkiwi
+ * @version      1.0.2
  * @link         https://nox.kiwi/
  */
 final class MemcacheCache extends Cache
@@ -90,7 +90,7 @@ final class MemcacheCache extends Cache
     public function set(string $group, string $key, mixed $value = null, int $timeout = null): void
     {
         if ($value === null) {
-            $this->logDebug("CORE_BACKEND_CLASS_CACHE_MEMCACHED_SET::EMPTY VALUE (group = $group, key= $key)");
+            $this->clearKey($group, $key);
 
             return;
         }
