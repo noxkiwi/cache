@@ -19,11 +19,15 @@ use noxkiwi\validator\Validator\TextValidator;
 final class ConnectionValidator extends StructureValidator
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    protected array $structureDesign = [
-        'host'    => TextValidator::class,
-        'port'    => PortValidator::class,
-        'timeout' => NaturalValidator::class
-    ];
+    protected function __construct(array $options = null)
+    {
+        parent::__construct($options);
+        $this->structureDesign = [
+            'host'    => TextValidator::class,
+            'port'    => PortValidator::class,
+            'timeout' => NaturalValidator::class
+        ];
+    }
 }
