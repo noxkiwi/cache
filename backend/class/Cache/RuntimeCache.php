@@ -15,8 +15,8 @@ use function array_keys;
  * @package      noxkiwi\cache\Cache
  * @author       Jan Nox <jan.nox@pm.me>
  * @license      https://nox.kiwi/license
- * @copyright    2021 noxkiwi
- * @version      1.0.2
+ * @copyright    2021 - 2022 noxkiwi
+ * @version      1.0.3
  * @link         https://nox.kiwi/
  */
 final class RuntimeCache extends Cache
@@ -31,7 +31,7 @@ final class RuntimeCache extends Cache
     public function set(string $group, string $key, mixed $value = null, int $timeout = null): void
     {
         if ($value === null) {
-            $this->logDebug("CORE_BACKEND_CLASS_CACHE_RUNTIMECACHE_SET::EMPTY_VALUE (group = $group, key=$key)");
+            $this->clearKey($group, $key);
 
             return;
         }

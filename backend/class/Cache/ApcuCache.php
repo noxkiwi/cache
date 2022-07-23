@@ -19,12 +19,14 @@ use const E_ERROR;
  * @package      noxkiwi\cache\Cache
  * @author       Jan Nox <jan.nox@pm.me>
  * @license      https://nox.kiwi/license
- * @copyright    2021 noxkiwi
- * @version      1.0.0
+ * @copyright    2021 - 2022 noxkiwi
+ * @version      1.0.1
  * @link         https://nox.kiwi/
  */
 final class ApcuCache extends Cache
 {
+    protected const USE_DRIVER = false;
+
     /**
      * @throws \noxkiwi\core\Exception\SystemComponentException If the APCU Extension is not loaded.
      */
@@ -42,6 +44,8 @@ final class ApcuCache extends Cache
     public function set(string $group, string $key, mixed $value = null, int $timeout = null): void
     {
         if ($value === null) {
+            $this->clearKey($group, $key);
+
             return;
         }
         $this->notify(CacheObserver::NOTIFY_SET);

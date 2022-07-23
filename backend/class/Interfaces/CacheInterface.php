@@ -7,8 +7,8 @@ namespace noxkiwi\cache\Interfaces;
  * @package      noxkiwi\cache\Interfaces
  * @author       Jan Nox <jan.nox@pm.me>
  * @license      https://nox.kiwi/license
- * @copyright    2021 noxkiwi
- * @version      1.0.0
+ * @copyright    2021 - 2022 noxkiwi
+ * @version      1.0.1
  * @link         https://nox.kiwi/
  */
 interface CacheInterface
@@ -28,6 +28,7 @@ interface CacheInterface
      * I will store the given $value on the cache service.
      * It will be accessed by the given $group and $key.
      * It will expire after $timeout seconds.
+     * If you pass NULL as $value, I will forward to clearKey($group, $key)
      *
      * @param string   $group
      * @param string   $key
