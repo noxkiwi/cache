@@ -18,15 +18,17 @@ use const E_ERROR;
  * @package      noxkiwi\cache\Cache
  * @author       Jan Nox <jan.nox@pm.me>
  * @license      https://nox.kiwi/license
- * @copyright    2021 noxkiwi
- * @version      1.0.0
+ * @copyright    2021 - 2022 noxkiwi
+ * @version      1.0.1
  * @link         https://nox.kiwi/
  */
 final class RedisCache extends Cache
 {
-    /** @var mixed I am the hostname of the Memcached cache server. */
+    /** @var \noxkiwi\cache\Cache\RuntimeCache|null I will be set during runtime */
+    private ?RuntimeCache $runtimeCache;
+    /** @var string I am the hostname of the Memcached cache server. */
     private string $host;
-    /** @var mixed I am the port number of the Memcached cache server. */
+    /** @var int I am the port number of the Memcached cache server. */
     private int $port;
     /** @var \Redis I am the PHP memcached Client class instance */
     private Redis $redis;
@@ -47,6 +49,10 @@ final class RedisCache extends Cache
         $errors    = $validator->validate($config);
         if (! empty ($errors)) {
             throw new ConfigurationException('INVALID_MEMCACHE_SETUP', E_ERROR, $errors);
+        }
+        $this->runtimeCache = null;
+        if ((bool)($config['runtimeCache'] ?? false) === true) {
+            $this->runtimeCache = RuntimeCache::getInstance();
         }
         $this->timeout = $config['timeout'] ?? self::DEFAULT_TIMEOUT;
         $this->port    = $config['port'];
@@ -76,6 +82,7 @@ final class RedisCache extends Cache
         }
         $this->notify(CacheObserver::NOTIFY_SET);
         $this->redis->set(self::getKeyName($group, $key), $this->compress($value), $timeout ?? Cache::DEFAULT_TIMEOUT);
+        $this->runtimeCache?->set($group, $key, $value, $timeout);
     }
 
     /**
@@ -96,7 +103,7 @@ final class RedisCache extends Cache
      */
     public function exists(string $group, string $key): bool
     {
-        return $this->redis->exists(self::getKeyName($group, $key));
+        return (bool)$this->redis->exists(self::getKeyName($group, $key));
     }
 
     /**
@@ -104,6 +111,9 @@ final class RedisCache extends Cache
      */
     public function get(string $group, string $key): mixed
     {
+        if ($this->runtimeCache?->exists($group, $key)) {
+            return $this->runtimeCache?->get($group, $key);
+        }
         $get = $this->redis->get(self::getKeyName($group, $key));
         if ($get === false) {
             $this->notify(CacheObserver::NOTIFY_MISS);
@@ -130,6 +140,7 @@ final class RedisCache extends Cache
     public function clear(string $key): void
     {
         $this->redis->del($key);
+        $this->runtimeCache?->clear($key);
     }
 
     /**

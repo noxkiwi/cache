@@ -25,6 +25,8 @@ use const E_ERROR;
  */
 final class ApcuCache extends Cache
 {
+    protected const USE_DRIVER = false;
+
     /**
      * @throws \noxkiwi\core\Exception\SystemComponentException If the APCU Extension is not loaded.
      */

@@ -38,11 +38,11 @@ use const E_USER_NOTICE;
  */
 final class MemcacheCache extends Cache
 {
-    /** @var \noxkiwi\cache\Cache I will be set during runtime */
-    private Cache $runtimeCache;
-    /** @var mixed I am the hostname of the Memcached cache server. */
+    /** @var \noxkiwi\cache\Cache\RuntimeCache|null I will be set during runtime */
+    private ?RuntimeCache $runtimeCache;
+    /** @var string I am the hostname of the Memcached cache server. */
     private string $host;
-    /** @var mixed I am the port number of the Memcached cache server. */
+    /** @var int I am the port number of the Memcached cache server. */
     private int $port;
     /** @var \Memcache I am the PHP memcached Client class instance */
     private Memcache $memcache;
@@ -66,6 +66,10 @@ final class MemcacheCache extends Cache
         if (! empty ($errors)) {
             throw new ConfigurationException('INVALID_MEMCACHE_SETUP', E_ERROR, $errors);
         }
+        $this->runtimeCache = null;
+        if ((bool)($config['runtimeCache'] ?? false) === true) {
+            $this->runtimeCache = RuntimeCache::getInstance();
+        }
         $this->host    = $config['host'];
         $this->port    = $config['port'];
         $this->timeout = $config['timeout'] ?? self::DEFAULT_TIMEOUT;
@@ -79,8 +83,7 @@ final class MemcacheCache extends Cache
     protected function init(): void
     {
         parent::init();
-        $this->runtimeCache = RuntimeCache::getInstance();
-        $this->memcache     = new Memcache();
+        $this->memcache = new Memcache();
         $this->memcache->addServer($this->host, $this->port);
     }
 
@@ -100,7 +103,7 @@ final class MemcacheCache extends Cache
         }
         $this->logDebug("CORE_BACKEND_CLASS_CACHE_MEMCACHED_SET::SETTING (group = $group, key= $key)");
         $this->memcache->set("{$group}_$key", $this->compress($value));
-        $this->runtimeCache->set($group, $key, $value, $timeout);
+        $this->runtimeCache?->set($group, $key, $value, $timeout);
     }
 
     /**
@@ -116,8 +119,8 @@ final class MemcacheCache extends Cache
      */
     public function get(string $group, string $key): mixed
     {
-        if (! Request::isCli() && $this->runtimeCache->exists($group, $key)) {
-            return $this->runtimeCache->get($group, $key);
+        if (! Request::isCli() && $this->runtimeCache?->exists($group, $key)) {
+            return $this->runtimeCache?->get($group, $key);
         }
         try {
             $get = $this->memcache->get("{$group}_$key");
@@ -137,7 +140,7 @@ final class MemcacheCache extends Cache
             return null;
         }
         $this->notify(CacheEvents::HIT);
-        $this->runtimeCache->set($group, $key, $data);
+        $this->runtimeCache?->set($group, $key, $data);
 
         return $data;
     }
@@ -156,7 +159,7 @@ final class MemcacheCache extends Cache
      */
     public function clear(string $key): void
     {
-        $this->runtimeCache->clear($key);
+        $this->runtimeCache?->clear($key);
         $this->logDebug('CORE_BACKEND_CLASS_CACHE_MEMCACHED_CLEAR::CLEARING {key}', ['key' => $key]);
         $this->memcache->delete($key);
     }
@@ -175,7 +178,7 @@ final class MemcacheCache extends Cache
         $slabs    = [];
         $elements = [];
         foreach ($lines as $line) {
-            if (! preg_match('/STAT items:([\d]+):number ([\d]+)/', $line, $matches)) {
+            if (! preg_match('/STAT items:(\d+):number (\d+)/', $line, $matches)) {
                 continue;
             }
             if (isset($matches[1]) && ! in_array($matches[1], $slabs, true)) {
@@ -185,13 +188,13 @@ final class MemcacheCache extends Cache
                 $elements[] = $matches[1];
             }
         }
-
         $return = [];
-        foreach($elements as $element) {
-            foreach($element as $datum) {
+        foreach ($elements as $element) {
+            foreach ($element as $datum) {
                 $return[] = $datum;
             }
         }
+
         return $return;
     }
 
